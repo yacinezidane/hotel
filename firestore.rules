@@ -1,0 +1,233 @@
+// ===============================================================
+// Assumed Data Model
+// ===============================================================
+//
+// Collection: settings
+// Document ID: global
+// Fields:
+//   - appName: string (required)
+//   - hotelName: string (optional)
+//   - theme: string (required)
+//   - darkMode: bool (required)
+//   - firebaseConfig: map (optional) - Private DB config
+//
+// Collection: rooms
+// Document ID: auto-generated
+// Fields:
+//   - number: string (required)
+//   - type: string (required)
+//   - status: string (required)
+//   - price: number (required)
+//
+// Collection: bookings
+// Document ID: auto-generated
+// Fields:
+//   - primaryGuestName: string (required)
+//   - roomId: number (required)
+//   - checkInDate: string (required)
+//   - checkOutDate: string (required)
+//   - status: string (required)
+//   - totalAmount: number (required)
+//
+// Collection: users
+// Document ID: uid
+// Fields:
+//   - name: string (required)
+//   - role: string (required)
+//   - email: string (optional)
+//   - uid: string (required)
+//
+// ===============================================================
+
+// ===============================================================
+// Assumed Data Model
+// ===============================================================
+//
+// Collection: settings
+// Document ID: global
+// Fields:
+//   - appName: string (required)
+//   - hotelName: string (optional)
+//   - theme: string (required)
+//   - darkMode: bool (required)
+//   - firebaseConfig: map (optional)
+//
+// Collection: rooms
+// Document ID: auto-generated
+// Fields:
+//   - number: string (required, size < 20)
+//   - type: string (required, size < 50)
+//   - status: string (required, enum)
+//   - price: number (required, >= 0)
+//
+// Collection: bookings
+// Document ID: auto-generated
+// Fields:
+//   - primaryGuestName: string (required, size < 100)
+//   - roomId: string (required)
+//   - checkInDate: string (required, ISO8601)
+//   - checkOutDate: string (required, ISO8601)
+//   - status: string (required, enum)
+//   - totalAmount: number (optional)
+//   - createdBy: string (required, uid)
+//
+// Collection: users
+// Document ID: uid
+// Fields:
+//   - name: string (required, size < 100)
+//   - role: string (required, enum)
+//   - email: string (optional, email)
+//   - uid: string (required, matches auth.uid)
+//
+// ===============================================================
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && 
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'manager' ||
+         (request.auth.token.email == "proelnazil@gmail.com" && request.auth.token.email_verified == true));
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+
+    function hasOnlyAllowedFields(fields) {
+      return request.resource.data.keys().hasOnly(fields);
+    }
+
+    function isValidEmail(email) {
+      return email is string && email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    }
+
+    function isValidDateString(dateStr) {
+      return dateStr is string && dateStr.matches("^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.*Z?$");
+    }
+
+    // ===============================================================
+    // Domain Validators
+    // ===============================================================
+
+    function isValidUser(data) {
+      return hasRequiredFields(['name', 'role', 'uid']) &&
+             hasOnlyAllowedFields(['name', 'role', 'email', 'uid', 'permissions', 'status', 'createdAt', 'id', 'code', 'rank', 'crewId', 'department', 'isHeadOfDepartment', 'salary', 'joinDate', 'avatar', 'isBlocked', 'accessCode', 'jobTitle', 'leaveBalance', 'phone']) &&
+             data.name is string && data.name.size() > 0 && data.name.size() < 100 &&
+             data.role in ['manager', 'assistant_manager', 'operations_manager', 'reception_manager', 'receptionist', 'restaurant_manager', 'head_chef', 'chef', 'waiter', 'cafe_manager', 'barista', 'housekeeping_manager', 'housekeeping_staff', 'maintenance_manager', 'maintenance_staff', 'security_manager', 'security_guard', 'hr_manager', 'accountant', 'marketing_specialist', 'it_specialist', 'concierge', 'bellboy', 'driver', 'staff', 'guest', 'visitor'] &&
+             data.uid == request.auth.uid &&
+             (!('email' in data) || (data.email is string && data.email.size() < 100 && isValidEmail(data.email))) &&
+             (!('phone' in data) || (data.phone is string && data.phone.size() < 20)) &&
+             (!('status' in data) || data.status in ['active', 'inactive', 'on_leave', 'terminated']);
+    }
+
+    function isValidRoom(data) {
+      return hasRequiredFields(['number', 'type', 'status', 'price']) &&
+             hasOnlyAllowedFields(['number', 'type', 'status', 'price', 'description', 'amenities', 'images', 'id', 'currentGuestLocation']) &&
+             data.number is string && data.number.size() > 0 && data.number.size() < 20 &&
+             data.type in ['single', 'double', 'suite', 'vip'] &&
+             data.status in ['available', 'booked', 'occupied', 'dirty', 'maintenance'] &&
+             data.price is number && data.price >= 0 && data.price < 1000000 &&
+             (!('description' in data) || (data.description is string && data.description.size() < 1000));
+    }
+
+    function isValidBooking(data) {
+      return hasRequiredFields(['primaryGuestName', 'roomId', 'checkInDate', 'checkOutDate', 'status', 'createdBy']) &&
+             hasOnlyAllowedFields(['primaryGuestName', 'roomId', 'checkInDate', 'checkOutDate', 'status', 'totalAmount', 'createdBy', 'createdAt', 'guests', 'notes', 'id', 'companyName', 'roomNumber', 'roomType', 'guestToken', 'mealPlan', 'extraServices', 'guestLocation', 'phone']) &&
+             data.primaryGuestName is string && data.primaryGuestName.size() > 0 && data.primaryGuestName.size() < 100 &&
+             isValidDateString(data.checkInDate) &&
+             isValidDateString(data.checkOutDate) &&
+             data.status in ['pending', 'active', 'completed', 'cancelled', 'confirmed'] &&
+             data.createdBy == request.auth.uid &&
+             (!('totalAmount' in data) || (data.totalAmount is number && data.totalAmount >= 0)) &&
+             (!('notes' in data) || (data.notes is string && data.notes.size() < 1000));
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /settings/global {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && (isOwner(userId) || isAdmin()) && isValidUser(request.resource.data);
+      allow update: if isAuthenticated() && (isOwner(userId) || isAdmin()) && isValidUser(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    match /rooms/{roomId} {
+      allow read: if true;
+      allow write: if isAuthenticated() && isValidRoom(request.resource.data);
+    }
+
+    match /bookings/{bookingId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && isValidBooking(request.resource.data);
+      allow update: if isAuthenticated() && isValidBooking(request.resource.data);
+      allow delete: if isAdmin();
+    }
+
+    match /role_permissions/{roleId} {
+      allow read: if isAuthenticated();
+      allow write: if isAdmin();
+    }
+
+    match /invoices/{id} { allow read, write: if isAuthenticated(); }
+    match /transactions/{id} { allow read, write: if isAuthenticated(); }
+    match /notifications/{id} { allow read, write: if isAuthenticated(); }
+    match /menuItems/{id} { allow read: if true; allow write: if isAdmin(); }
+    match /orders/{id} { allow read, write: if isAuthenticated(); }
+    match /qrRecords/{id} { allow read, write: if isAuthenticated(); }
+    match /inventory/{id} { allow read, write: if isAuthenticated(); }
+    match /hallBookings/{id} { allow read, write: if isAuthenticated(); }
+    match /poolPasses/{id} { allow read, write: if isAuthenticated(); }
+    match /maintenanceTickets/{id} { allow read, write: if isAuthenticated(); }
+    match /incidentReports/{id} { allow read, write: if isAuthenticated(); }
+    match /chatSessions/{id} { allow read, write: if isAuthenticated(); }
+    match /messages/{id} { allow read, write: if isAuthenticated(); }
+    match /guestHistory/{id} { allow read, write: if isAuthenticated(); }
+    match /serviceRequests/{id} { allow read, write: if isAuthenticated(); }
+    match /externalOrders/{id} { allow read, write: if isAuthenticated(); }
+    match /coordinationNotes/{id} { allow read, write: if isAuthenticated(); }
+    match /attendanceRecords/{id} { allow read, write: if isAuthenticated(); }
+    match /deliveryDrivers/{id} { allow read, write: if isAuthenticated(); }
+    match /partners/{id} { allow read, write: if isAuthenticated(); }
+    match /servicePoints/{id} { allow read, write: if isAuthenticated(); }
+    match /jobOpenings/{id} { allow read: if true; allow write: if isAdmin(); }
+    match /jobApplications/{id} { allow read, write: if isAuthenticated(); }
+    match /parkingSpots/{id} { allow read, write: if isAuthenticated(); }
+    match /legalRules/{id} { allow read: if true; allow write: if isAdmin(); }
+    match /reservations/{id} { allow read, write: if isAuthenticated(); }
+    match /resourceBookings/{id} { allow read, write: if isAuthenticated(); }
+    match /publicServices/{id} { allow read: if true; allow write: if isAdmin(); }
+    match /facilities/{id} { allow read: if true; allow write: if isAdmin(); }
+    match /hotelEvents/{id} { allow read: if true; allow write: if isAdmin(); }
+    match /serviceFeedbacks/{id} { allow read, write: if isAuthenticated(); }
+    match /activities/{id} { allow read: if true; allow write: if isAdmin(); }
+    match /guestRegistrationForms/{id} { allow read, write: if isAuthenticated(); }
+    match /audit_logs/{id} { allow read: if isAdmin(); allow create: if isAuthenticated(); }
+    match /housekeeping/{id} { allow read, write: if isAuthenticated(); }
+    
+    // Default deny
+    match /{path=**} {
+      allow read, write: if false;
+    }
+  }
+}

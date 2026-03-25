@@ -1,0 +1,292 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #006269;
+  --color-secondary: #cca43b;
+  --color-accent: #c05621;
+  --color-brand-green: #006269;
+  --color-brand-gold: #cca43b;
+  --color-brand-teal: #001e21;
+}
+
+@layer base {
+    :root {
+        color-scheme: light; /* Force light mode by default, ignoring system preference */
+    }
+    :root.dark {
+        color-scheme: dark; /* Only use dark mode when explicitly active */
+    }
+
+    body {
+        @apply font-sans antialiased text-gray-900 bg-gray-50 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300;
+        font-family: 'Cairo', sans-serif;
+    }
+
+    /* Radical Input Fix: Global styling for all form fields */
+    input, select, textarea {
+        @apply bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 rounded-xl transition-all duration-200 focus:ring-2 focus:ring-brand-green/20 focus:border-brand-green outline-none;
+    }
+
+    /* Fix placeholder colors in dark mode */
+    input::placeholder, textarea::placeholder {
+        @apply text-gray-400 dark:text-gray-500;
+    }
+
+    /* Scrollbar refinement - more prominent for accessibility */
+    ::-webkit-scrollbar {
+        width: 12px;
+        height: 12px;
+    }
+    ::-webkit-scrollbar-track {
+        @apply bg-gray-100 dark:bg-gray-800/50;
+    }
+    ::-webkit-scrollbar-thumb {
+        @apply bg-gray-400 dark:bg-gray-600 rounded-full border-2 border-transparent bg-clip-padding hover:bg-gray-500 dark:hover:bg-gray-500 transition-colors shadow-inner;
+    }
+
+    /* Force scrollbars to be visible on all scrollable elements */
+    * {
+        scrollbar-width: auto;
+        scrollbar-color: theme('colors.gray.400') theme('colors.gray.100');
+    }
+
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 10px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.05);
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 10px;
+        border: 2px solid transparent;
+        background-clip: padding-box;
+    }
+    .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.4);
+    }
+    .custom-scrollbar:hover::-webkit-scrollbar-thumb {
+        background: rgba(0, 0, 0, 0.5);
+    }
+    .dark .custom-scrollbar:hover::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.6);
+    }
+
+    /* Drag Handle for Modals/Sheets */
+    .drag-handle {
+        @apply w-16 h-1.5 bg-gray-400 dark:bg-gray-500 rounded-full mx-auto my-4 shrink-0 cursor-grab active:cursor-grabbing shadow-sm;
+    }
+}
+
+/* Utility classes for consistent theming */
+.card-base {
+    @apply bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-xl rounded-[3rem] transition-all duration-500 hover:shadow-2xl;
+}
+
+.tablet-list-item {
+    @apply flex items-center p-5 rounded-[2.5rem] border border-transparent hover:border-gray-100 dark:hover:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-all duration-300;
+}
+
+/* Global Tablet-Style Overrides */
+[class*="rounded-[2rem]"] {
+    border-radius: 3rem !important;
+}
+
+[class*="rounded-[1.5rem]"] {
+    border-radius: 2rem !important;
+}
+
+[class*="shadow-sm"] {
+    @apply !shadow-lg;
+}
+
+[class*="shadow-md"] {
+    @apply !shadow-xl;
+}
+
+/* Page Container Tablet Look */
+.page-container-tablet {
+    @apply bg-white/40 dark:bg-gray-800/40 backdrop-blur-xl rounded-[3.5rem] shadow-2xl border border-white/20 dark:border-gray-700/30 p-6 md:p-10 transition-all duration-500;
+}
+
+.text-primary {
+    @apply text-gray-900 dark:text-white;
+}
+
+.text-secondary {
+    @apply text-gray-500 dark:text-gray-400;
+}
+
+/* ... existing patterns ... */
+/* Zellige Theme Colors & Patterns */
+:root {
+    --zellige-primary: #006269; /* Emerald Green */
+    --zellige-secondary: #cca43b; /* Ochre Gold */
+    --zellige-accent: #c05621; /* Terracotta */
+    --zellige-blue: #1e3a8a; /* Deep Blue */
+    --zellige-cream: #fdfbf7; /* Off-white background */
+    --zellige-dark-bg: #001e21; /* Deep Dark Teal (Updated) */
+
+    /* Zellige Algiers (Casbah Blue) */
+    --zellige-algiers-primary: #1e3a8a;
+    --zellige-algiers-secondary: #64748b;
+    --zellige-algiers-accent: #dc2626;
+    --zellige-algiers-bg: #eff6ff;
+    --zellige-algiers-dark-bg: #0f172a;
+}
+
+.bg-zellige-algiers-pattern {
+    background-color: #f8fafc;
+    background-image:
+        /* Complex Algerian Zellige Pattern (Blue, Green, Yellow) */
+        radial-gradient(circle at 50% 50%, #cca43b 2%, transparent 3%),
+        radial-gradient(circle at 50% 50%, transparent 14%, #1e3a8a 15%, #1e3a8a 18%, transparent 19%),
+        linear-gradient(45deg, transparent 48%, #024d38 48%, #024d38 52%, transparent 52%),
+        linear-gradient(-45deg, transparent 48%, #024d38 48%, #024d38 52%, transparent 52%),
+        conic-gradient(from 0deg at 50% 50%, 
+            transparent 0deg, transparent 22.5deg, 
+            #1e3a8a 22.5deg, #1e3a8a 67.5deg, 
+            transparent 67.5deg, transparent 112.5deg, 
+            #cca43b 112.5deg, #cca43b 157.5deg, 
+            transparent 157.5deg, transparent 202.5deg, 
+            #1e3a8a 202.5deg, #1e3a8a 247.5deg, 
+            transparent 247.5deg, transparent 292.5deg, 
+            #cca43b 292.5deg, #cca43b 337.5deg, 
+            transparent 337.5deg
+        );
+    background-size: 100px 100px;
+    background-position: 0 0;
+    opacity: 0.1;
+}
+
+.dark .bg-zellige-algiers-pattern {
+    background-color: #0a192f;
+    background-image:
+        radial-gradient(circle at 50% 50%, #cca43b 2%, transparent 3%),
+        radial-gradient(circle at 50% 50%, transparent 14%, #1e3a8a 15%, #1e3a8a 18%, transparent 19%),
+        linear-gradient(45deg, transparent 48%, #024d38 48%, #024d38 52%, transparent 52%),
+        linear-gradient(-45deg, transparent 48%, #024d38 48%, #024d38 52%, transparent 52%);
+    opacity: 0.2;
+}
+
+.bg-zellige-pattern {
+    background-color: var(--zellige-cream);
+    background-image: 
+        /* Authentic 8-Point Star & Cross Pattern */
+        radial-gradient(circle at 50% 50%, transparent 14%, var(--zellige-secondary) 15%, var(--zellige-secondary) 18%, transparent 19%),
+        linear-gradient(45deg, transparent 48%, var(--zellige-primary) 48%, var(--zellige-primary) 52%, transparent 52%),
+        linear-gradient(-45deg, transparent 48%, var(--zellige-primary) 48%, var(--zellige-primary) 52%, transparent 52%),
+        conic-gradient(from 0deg at 50% 50%, 
+            transparent 0deg, transparent 22.5deg, 
+            var(--zellige-accent) 22.5deg, var(--zellige-accent) 67.5deg, 
+            transparent 67.5deg, transparent 112.5deg, 
+            var(--zellige-accent) 112.5deg, var(--zellige-accent) 157.5deg, 
+            transparent 157.5deg, transparent 202.5deg, 
+            var(--zellige-accent) 202.5deg, var(--zellige-accent) 247.5deg, 
+            transparent 247.5deg, transparent 292.5deg, 
+            var(--zellige-accent) 292.5deg, var(--zellige-accent) 337.5deg, 
+            transparent 337.5deg
+        );
+    background-size: 80px 80px;
+    background-position: 0 0, 0 0, 0 0, 0 0;
+}
+
+/* Authentic Borders */
+.border-zellige {
+    border-color: var(--zellige-secondary);
+    border-width: 1px;
+}
+
+.border-zellige-thick {
+    border-color: var(--zellige-primary);
+    border-width: 2px;
+}
+
+/* Text Colors */
+.text-zellige-primary {
+    color: var(--zellige-primary);
+}
+
+.text-zellige-secondary {
+    color: var(--zellige-secondary);
+}
+
+/* Ensure patterns don't break dark mode text readability if used on backgrounds */
+.dark .bg-zellige-pattern {
+    background-color: var(--zellige-dark-bg);
+    opacity: 0.15; /* Increased visibility for dark mode */
+    mix-blend-mode: normal;
+    background-image: 
+        linear-gradient(30deg, var(--zellige-secondary) 12%, transparent 12.5%, transparent 87%, var(--zellige-secondary) 87.5%, var(--zellige-secondary)),
+        linear-gradient(150deg, var(--zellige-secondary) 12%, transparent 12.5%, transparent 87%, var(--zellige-secondary) 87.5%, var(--zellige-secondary)),
+        linear-gradient(30deg, var(--zellige-secondary) 12%, transparent 12.5%, transparent 87%, var(--zellige-secondary) 87.5%, var(--zellige-secondary)),
+        linear-gradient(150deg, var(--zellige-secondary) 12%, transparent 12.5%, transparent 87%, var(--zellige-secondary) 87.5%, var(--zellige-secondary)),
+        linear-gradient(60deg, rgba(255,255,255,0.1) 25%, transparent 25.5%, transparent 75%, rgba(255,255,255,0.1) 75%, rgba(255,255,255,0.1)),
+        linear-gradient(60deg, rgba(255,255,255,0.1) 25%, transparent 25.5%, transparent 75%, rgba(255,255,255,0.1) 75%, rgba(255,255,255,0.1));
+}
+
+.dark .bg-zellige-v2-pattern {
+    background-color: transparent;
+    opacity: 0.1;
+    mix-blend-mode: screen;
+}
+
+/* Global Dark Mode Text Enhancements */
+.dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
+    @apply text-white drop-shadow-sm;
+    letter-spacing: 0.02em; /* Improve readability */
+}
+
+.dark p, .dark span, .dark div {
+    /* Ensure high contrast for body text */
+    /* We rely on text-gray-100 from body, but can enforce lighter grays for muted text */
+}
+
+.dark .text-muted {
+    @apply text-gray-300; /* Lighter than gray-400 for better legibility */
+}
+
+/* ... other patterns ... */
+
+.bg-zellige-v2-pattern {
+    background-color: #f5fcf9;
+    background-image: 
+        radial-gradient(circle at 100% 50%, transparent 20%, #c6e3d8 21%, #c6e3d8 34%, transparent 35%, transparent),
+        radial-gradient(circle at 0% 50%, transparent 20%, #c6e3d8 21%, #c6e3d8 34%, transparent 35%, transparent),
+        linear-gradient(30deg, #024d38 0%, #024d38 5%, transparent 5%),
+        linear-gradient(150deg, #024d38 0%, #024d38 5%, transparent 5%),
+        linear-gradient(60deg, transparent 40%, #c6e3d8 41%, #c6e3d8 45%, transparent 46%);
+    background-size: 60px 60px;
+    background-position: 0 0, 30px 30px, 30px 30px, 0 0;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+}
+.pt-safe {
+    padding-top: env(safe-area-inset-top);
+}
+
+.max-w-A4 {
+    max-width: 210mm;
+    width: 100%;
+}
+
+@media print {
+    body {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    .no-print {
+        display: none !important;
+    }
+}
+

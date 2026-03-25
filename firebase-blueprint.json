@@ -1,0 +1,189 @@
+{
+  "entities": {
+    "HotelSettings": {
+      "title": "Hotel Settings",
+      "description": "Global configuration for the hotel instance",
+      "type": "object",
+      "properties": {
+        "appName": { "type": "string" },
+        "hotelName": { "type": "string" },
+        "theme": { "type": "string" },
+        "darkMode": { "type": "boolean" },
+        "firebaseConfig": {
+          "type": "object",
+          "description": "Optional private Firebase configuration for this hotel",
+          "properties": {
+            "apiKey": { "type": "string" },
+            "authDomain": { "type": "string" },
+            "projectId": { "type": "string" },
+            "storageBucket": { "type": "string" },
+            "messagingSenderId": { "type": "string" },
+            "appId": { "type": "string" },
+            "measurementId": { "type": "string" }
+          }
+        }
+      }
+    },
+    "Room": {
+      "title": "Room",
+      "description": "Hotel room definition",
+      "type": "object",
+      "properties": {
+        "number": { "type": "string" },
+        "type": { "type": "string" },
+        "status": { "type": "string" },
+        "price": { "type": "number" }
+      },
+      "required": ["number", "type", "status", "price"]
+    },
+    "Booking": {
+      "title": "Booking",
+      "description": "Guest reservation",
+      "type": "object",
+      "properties": {
+        "primaryGuestName": { "type": "string" },
+        "roomId": { "type": "number" },
+        "checkInDate": { "type": "string" },
+        "checkOutDate": { "type": "string" },
+        "status": { "type": "string" },
+        "totalAmount": { "type": "number" },
+        "createdBy": { "type": "string" }
+      },
+      "required": ["primaryGuestName", "roomId", "checkInDate", "checkOutDate", "status", "createdBy"]
+    },
+    "User": {
+      "title": "User",
+      "description": "Staff or Manager account",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "role": { "type": "string" },
+        "email": { "type": "string" },
+        "uid": { "type": "string" },
+        "status": { "type": "string" }
+      },
+      "required": ["name", "role", "uid"]
+    },
+    "Invoice": {
+      "title": "Invoice",
+      "description": "Billing document for a booking",
+      "type": "object",
+      "properties": {
+        "bookingId": { "type": "string" },
+        "guestName": { "type": "string" },
+        "amount": { "type": "number" },
+        "date": { "type": "string" },
+        "isPaid": { "type": "boolean" }
+      },
+      "required": ["bookingId", "guestName", "amount", "date", "isPaid"]
+    },
+    "Transaction": {
+      "title": "Transaction",
+      "description": "Financial record",
+      "type": "object",
+      "properties": {
+        "amount": { "type": "number" },
+        "type": { "type": "string" },
+        "category": { "type": "string" },
+        "description": { "type": "string" },
+        "date": { "type": "string" },
+        "userId": { "type": "string" }
+      },
+      "required": ["amount", "type", "category", "date", "userId"]
+    },
+    "Notification": {
+      "title": "Notification",
+      "description": "System alert or message for a user",
+      "type": "object",
+      "properties": {
+        "message": { "type": "string" },
+        "userId": { "type": "string" },
+        "timestamp": { "type": "string" },
+        "type": { "type": "string" }
+      },
+      "required": ["message", "userId", "timestamp", "type"]
+    },
+    "RolePermissionSet": {
+      "title": "Role Permission Set",
+      "description": "Permissions associated with a specific role",
+      "type": "object",
+      "properties": {
+        "role": { "type": "string" },
+        "permissions": { "type": "object" },
+        "updatedAt": { "type": "string" },
+        "updatedBy": { "type": "string" }
+      },
+      "required": ["role", "permissions", "updatedAt", "updatedBy"]
+    },
+    "AuditLog": {
+      "title": "Audit Log",
+      "description": "System audit log entry",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "userRole": { "type": "string" },
+        "action": { "type": "string" },
+        "details": { "type": "string" },
+        "category": { "type": "string" },
+        "timestamp": { "type": "string" }
+      },
+      "required": ["userId", "userName", "userRole", "action", "details", "category", "timestamp"]
+    },
+    "HousekeepingTask": {
+      "title": "Housekeeping Task",
+      "description": "Cleaning or maintenance task",
+      "type": "object",
+      "properties": {
+        "roomId": { "type": "number" },
+        "roomNumber": { "type": "string" },
+        "status": { "type": "string" },
+        "priority": { "type": "string" },
+        "notes": { "type": "string" }
+      },
+      "required": ["roomId", "roomNumber", "status", "priority"]
+    }
+  },
+  "firestore": {
+    "settings/global": {
+      "schema": "HotelSettings",
+      "description": "Global hotel configuration"
+    },
+    "rooms/{roomId}": {
+      "schema": "Room",
+      "description": "Collection of hotel rooms"
+    },
+    "bookings/{bookingId}": {
+      "schema": "Booking",
+      "description": "Collection of reservations"
+    },
+    "users/{userId}": {
+      "schema": "User",
+      "description": "Staff and manager profiles"
+    },
+    "invoices/{invoiceId}": {
+      "schema": "Invoice",
+      "description": "Billing records"
+    },
+    "transactions/{transactionId}": {
+      "schema": "Transaction",
+      "description": "Accounting transactions"
+    },
+    "notifications/{notificationId}": {
+      "schema": "Notification",
+      "description": "User notifications"
+    },
+    "audit_logs/{logId}": {
+      "schema": "AuditLog",
+      "description": "System audit logs for transparency"
+    },
+    "housekeeping/{taskId}": {
+      "schema": "HousekeepingTask",
+      "description": "Cleaning and maintenance tasks for rooms"
+    },
+    "role_permissions/{roleId}": {
+      "schema": "RolePermissionSet",
+      "description": "Global permissions for each role"
+    }
+  }
+}

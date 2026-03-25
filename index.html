@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>AUTHENTIC ZELLIJ</title>
+    
+    <!-- PWA / Desktop App Meta Tags -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="AUTHENTIC ZELLIJ">
+    <meta name="apple-mobile-web-app-title" content="AUTHENTIC ZELLIJ">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="msapplication-navbutton-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="msapplication-starturl" content="/">
+    
+    <!-- Placeholder for Manifest (Required for PWA install) -->
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIkF1dGhlbnRpYyBaZWxsaWogTWFuYWdlciIsCiAgInNob3J0X25hbWUiIjogIkF1dGhlbnRpYyBaZWxsaWoiLAogICJzdGFydF91cmwiOiAiLyIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiI2ZmZmZmZiIsCiAgInRoZW1lX2NvbG9yIjogIiMyNTYzZWIiLAogICJpY29ucyI6IFt7CiAgICAic3JjIjogImh0dHBzOi8vdWktYXZhdGFycy5jb20vYXBpLz9uYW1lPUF1dGhlbnRpYytaZWxsaWomYmFja2dyb3VuZD0yNTYzZWImY29sb3I9ZmZmJnNpemU9MTkyIiwKICAgICJzaXplcyI6ICIxOTJ4MTkyIiwKICAgICJ0eXBlIjogImltYWdlL3BuZyIKICB9LCB7CiAgICAic3JjIjogImh0dHBzOi8vdWktYXZhdGFycy5jb20vYXBpLz9uYW1lPUF1dGhlbnRpYytaZWxsaWomYmFja2dyb3VuZD0yNTYzZWImY29sb3I9ZmZmJnNpemU9NTEyIiwKICAgICJzaXplcyI6ICI1MTJ4NTEyIiwKICAgICJ0eXBlIjogImltYWdlL3BuZyIKICB9XQp9" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.4",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/",
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "lucide-react": "https://esm.sh/lucide-react@^0.563.0",
+    "recharts": "https://esm.sh/recharts@^3.7.0"
+  }
+}
+</script>
+</head>
+  <body class="bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300 overflow-hidden select-none">
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+    
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          console.log('Service Worker supported');
+        });
+      }
+    </script>
+  </body>
+</html>
